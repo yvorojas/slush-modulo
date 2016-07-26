@@ -55,6 +55,10 @@ gulp.task('default', function(done) {
         message: '¿Cual es el nombre del modulo?',
         default: 'modulo'
     }, {
+        name: 'dirName',
+        message: '¿Cual es el nombre del directorio donde incluir los modulos?',
+        default: 'www/app/modules/'
+    },{
         type: 'confirm',
         name: 'moveon',
         message: 'Continue?'
@@ -66,11 +70,11 @@ gulp.task('default', function(done) {
                 return done();
             }
             answers.appNameSlug = _.slugify(answers.moduleName);
+            answers.moduleNameUpper =  answers.moduleName.substring(0,1).toUpperCase() + answers.moduleName.substring(1,answers.moduleName.length);
             gulp.src(__dirname + '/templates/**')
                 .pipe(template(answers))
                 .pipe(rename(function(file) {
                     var splitName = file.basename.split('.');
-                    console.log(file);
                     if (file.extname != '') {
                         if (splitName.length == 1) {
                             file.basename = answers.moduleName;
@@ -85,7 +89,7 @@ gulp.task('default', function(done) {
                     }*/
                 }))
                 .pipe(conflict('./'))
-                .pipe(gulp.dest('./' + answers.moduleName + '/'))
+                .pipe(gulp.dest('./' + answers.dirName+ answers.moduleName + '/'))
                 .pipe(install())
                 .on('end', function() {
                     done();
